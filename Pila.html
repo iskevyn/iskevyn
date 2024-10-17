@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pila LIFO</title>
+    <style>
+        body { font-family:fantasy, Haettenschweiler, 'Arial Narrow Bold', sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Haettenschweiler, 'Arial Narrow Bold', sans-serif, 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, sans-serif; margin: 20px; }
+        .container { max-width: 500px; margin: auto; text-align: center; }
+        .status { margin-top: 20px; padding: 10px; border: 1px solid #ccc; display: none; } /* Oculto por defecto */
+        button {
+            margin: 5px; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            border: none; 
+            border-radius: 25px; 
+            color: #fff; 
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-insertar { background-color: #008820; }
+        .btn-insertar:hover { background-color: #218838; }
+
+        .btn-eliminar { background-color: #95000f; }
+        .btn-eliminar:hover { background-color: #c82333; }
+
+        .btn-mostrar { background-color: #aa8105; color: #000; }
+        .btn-mostrar:hover { background-color: #f3f3f3; }
+
+        .btn-regresar { background-color: #003369; }
+        .btn-regresar:hover { background-color: #0069d9; }
+
+        input { padding: 10px; font-size: 16px; margin: 10px; border-radius: 10px; border: 1px solid #ccc; }
+        h1 { color: #333; }
+        #status { margin-top: 20px; padding: 10px; border: 1px solid #ccc; font-size: 18px; display: none; }
+        #cima { margin-top: 10px; font-size: 20px; font-weight: bold; color: #007bff; }
+
+        .item {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            background-color: #5bcbe8;
+            border-radius: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .item.enter {
+            transform: translateY(-20px);
+            animation: enter 0.5s forwards;
+        }
+
+        .item.exit {
+            transform: translateY(20px);
+            animation: exit 0.5s forwards;
+        }
+
+        @keyframes enter {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes exit {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(20px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pila LIFO</h1>
+        <input type="number" id="valor" placeholder="Ingrese un valor (1-99)">
+        <button class="btn-insertar" onclick="push()">Insertar</button>
+        <button class="btn-eliminar" onclick="pop()">Eliminar</button>
+        <button class="btn-mostrar" onclick="show()">Mostrar</button>
+        <button class="btn-regresar" onclick="location.href='index.html'">Regresar</button>
+        <div class="status" id="status">Estado de la pila: []</div>
+        <div id="cima">CIMA:[]</div>
+        <p>Creado por Kevyn Reyes</p>
+    </div>
+
+    <script>
+        class Pila {
+            constructor(maxSize = 6) {
+                this.items = [];
+                this.maxSize = maxSize;
+            }
+
+            push(item) {
+                if (this.isFull()) {
+                    return "¡Overflow! La pila está llena.";
+                }
+                this.items.push(item);
+                return "Elemento añadido.";
+            }
+
+            pop() {
+                if (this.isEmpty()) {
+                    return "¡Underflow! La pila está vacía.";
+                }
+                return this.items.pop();
+            }
+
+            isEmpty() {
+                return this.items.length === 0;
+            }
+
+            isFull() {
+                return this.items.length === this.maxSize;
+            }
+
+            show() {
+                return this.items;
+            }
+
+            cima() {
+                return this.items.length > 0 ? this.items[this.items.length - 1] : "[]";
+            }
+        }
+
+        const pila = new Pila();
+
+        function push() {
+            const valor = parseInt(document.getElementById('valor').value);
+            if (valor >= 1 && valor <= 99) {
+                alert(pila.push(valor));
+                updateCima();
+            } else {
+                alert("El valor debe ser un número entero entre 1 y 99.");
+            }
+        }
+
+        function pop() {
+            alert(pila.pop());
+            updateCima();
+        }
+
+        function show() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            updateStatus();
+        }
+
+        function updateStatus() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = 'Estado de la pila: ';
+
+            pila.show().forEach((item) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item enter';
+                itemDiv.innerText = item;
+                statusDiv.appendChild(itemDiv);
+            });
+        }
+
+        function updateCima() {
+            const cimaDiv = document.getElementById('cima');
+            cimaDiv.innerHTML = 'CIMA: ' + pila.cima();
+        }
+
+        // Mostrar la cima de la pila al cargar la página
+        window.onload = updateCima;
+    </script>
+</body>
+</html>
